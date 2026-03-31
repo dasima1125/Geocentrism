@@ -1,0 +1,2 @@
+# Geocentrism
+MCP practice project
