@@ -1,0 +1,56 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  //   ㄴ  이 파일에 대한 자세한 정보는 https://aka.ms/tsconfig 를 방문하세요.
+  "compilerOptions": {
+    // [File Layout : 파일 배치 레이아웃]
+    "rootDir": "./src",             // 소스 파일의 루트 폴더 지정
+    "outDir": "./dist",             // 컴파일된 결과물이 저장될 폴더 지정
+
+
+    // Environment Settings
+    // See also https://aka.ms/tsconfig/module
+    //   ㄴ [Environment Settings : 환경 설정]
+    //      참고: https://aka.ms/tsconfig/module
+    "module": "nodenext",              // 모듈 시스템 결정 (최신 Node.js용)
+    "target": "esnext",                // 자바스크립트 변환 버전 (최신 버전)
+    "types": ["node"],                 // 포함할 타입 선언 파일 목록
+    
+    
+    // #ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ//
+    // | For nodejs:                    : Node.js를 위한 설정 예시                             //
+    // | "lib": ["esnext"],             : 컴파일에 포함될 라이브러리 파일 목록                   // 
+    // | "types": ["node"],             : Node.js 타입 정의 포함                               //
+    // | and npm install -D @types/node : 그리고 npm install -D @types/node 명령어로 설치 필요  //
+    // #ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ//
+    
+
+    // [Other Outputs : 기타 출력물]
+    "sourceMap": true,                 // 디버깅을 위한 소스 맵 파일(.map) 생성 여부
+    "declaration": true,               // 타입 정의 파일(.d.ts) 생성 여부
+    "declarationMap": true,            // 타입 정의 파일에 대한 소스 맵 생성 여부
+
+
+    // [Stricter Typechecking Options : 더 엄격한 타입 체크]
+    "noUncheckedIndexedAccess": true,     // 인덱스 서명 접근 시 undefined 포함 여부 체크
+    "exactOptionalPropertyTypes": true,   // 선택적 속성에 엄격한 규칙 적용
+
+
+    // [Style Options : 코드 스타일 옵션]
+    // "noImplicitReturns": true,                     // 함수에서 반환문이 없는 경로가 있으면 에러
+    // "noImplicitOverride": true,                    // 서브클래스에서 오버라이드 시 키워드 강제
+    // "noUnusedLocals": true,                        // 사용하지 않는 지역 변수가 있으면 에러
+    // "noUnusedParameters": true,                    // 사용하지 않는 매개변수가 있으면 에러
+    // "noFallthroughCasesInSwitch": true,            // switch문에서 break 누락 시 에러
+    // "noPropertyAccessFromIndexSignature": true,    // 인덱스 시그니처 속성 접근 방식 제한
+
+
+    // [Recommended Options : 권장 옵션]
+    "strict": true,                           // 모든 엄격한 타입 검사 옵션 활성화
+    "jsx": "react-jsx",                       // JSX 코드 생성 방식 설정
+    "verbatimModuleSyntax": true,             // import/export 구문을 최신 표준대로 처리
+    "isolatedModules": true,                  // 각 파일을 독립된 모듈로 변환할 수 있는지 보장
+    "noUncheckedSideEffectImports": true,     // 부수 효과 import에 대한 엄격한 체크
+    "moduleDetection": "force",               // 파일이 모듈인지 감지하는 방식 강제
+    "skipLibCheck": true                      // 선언 파일(.d.ts)의 타입 검사 건너뛰기
+  }
+}
