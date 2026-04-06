@@ -1,8 +1,13 @@
 import axios from 'axios';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { readExcelFile } from './Tools/ExcelReader.js';
 
-dotenv.config();
+dotenv.config({ quiet: true });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const SERVICE_KEY = process.env.SERVICE_KEY_Weather || "";
 
@@ -14,15 +19,18 @@ const ENDPOINT_VERSION = `${BASE_URL}/getFcstVersion`;    // 4. 버전확인
 
 export const Module_Weather = {
 
-  // #region 1. 초단기실황
-  날씨조회_현재: {
-    description: "현재 시점의 실제 기상 관측 데이터를 로우데이터로 가져옵니다.",
+  // #region 1. 초단기실황  <<=== 이놈만 자꾸 클로드 데스크탑에서 인식을못함 이유가뭐임 그냥 첫째가 싫은거야??
+  //Weather_now << 실패한 툴 이름
+  //"현재 시점의 실제 기상 관측 데이터를 가져옵니다. (선행조건 : 기상 모듈의 좌표추출이 필요합니다)" << 실패한 디스크립션 
+  Weather_forecast_now: {
+    description: "지금 기상 데이터를 가져옵니다. (선행조건 : 기상 모듈의 좌표추출이 필요합니다)",
     inputSchema: {
       type: "object",
       properties: {
-        nx: { type: "number", default: 60 },
-        ny: { type: "number", default: 127 }
-      }
+        nx: { type: "number", description: "기상청 격자 X 좌표"},
+        ny: { type: "number", description: "기상청 격자 Y 좌표"}
+      },
+      required: [] // 툴인식 실패를 자꾸해서 넣긴해봄,, 근데 될련진 모르겠다. <<== 파라미터가 있는상태에서 required가 없을시 완성도를 애매함으로 판단 즉 클로드 데스크탑이미완성으로 판단할 가능성이높아짐
     },
     handler: async (args: { nx?: number, ny?: number }) => {
       try {
@@ -37,6 +45,7 @@ export const Module_Weather = {
           ny: args.ny || 127,
           numOfRows: 100
         };
+    
 
         const response = await axios.get(ENDPOINT_NCST, { params });
         const items = response.data.response?.body?.items?.item;
@@ -55,14 +64,15 @@ export const Module_Weather = {
   // #endregion
 
   // #region 2. 초단기예보 
-  날씨예보_단기: {
-    description: "지금부터 향후 6시간 동안의 시간별 기상 예측 데이터를 가져옵니다.",
+  Weather_forecast_short: {
+    description: "지금부터 향후 6시간 동안의 시간별 기상 예측 데이터를 가져옵니다. (선행조건 : 기상 모듈의 좌표추출이 필요합니다)",
     inputSchema: {
       type: "object",
       properties: {
-        nx: { type: "number", default: 60 },
-        ny: { type: "number", default: 127 }
-      }
+        nx: { type: "number", description: "기상청 격자 X 좌표"},
+        ny: { type: "number", description: "기상청 격자 Y 좌표"}
+      },
+      required: []
     },
     handler: async (args: { nx?: number, ny?: number }) => {
       try {
@@ -95,14 +105,15 @@ export const Module_Weather = {
   // #endregion
 
   // #region 3. 단기예보 
-  날씨예보_장기: {
-    description: "오늘부터 모레까지의 상세 동네 예보 데이터를 가져옵니다.",
+  Weather_forecast_long: {
+    description: "오늘부터 모레까지의 상세 동네 예보 데이터를 가져옵니다. (선행조건 : 기상 모듈의 좌표추출이 필요합니다)",
     inputSchema: {
       type: "object",
       properties: {
-        nx: { type: "number", default: 60 },
-        ny: { type: "number", default: 127 }
-      }
+        nx: { type: "number", description: "기상청 격자 X 좌표"},
+        ny: { type: "number", description: "기상청 격자 Y 좌표"}
+      },
+      required: []
     },
     handler: async (args: { nx?: number, ny?: number }) => {
       try {
@@ -135,7 +146,7 @@ export const Module_Weather = {
   // #endregion
 
   // #region 4. 예보버전조회
-  예보버전조회: {
+  Weather_version: {
     description: "기상청 서버의 데이터 동기화 버전을 확인합니다. (실황, 초단기, 단기 중 선택)",
     inputSchema: { 
       type: "object", 
@@ -178,7 +189,7 @@ export const Module_Weather = {
   // #endregion
 
   // #region 좌표조회
-  좌표조회: {
+  Weather_coords: {
     description: "한국의 지역명(예: 서울 강남구, 부천시 중동)을 입력받아 기상청 격자 좌표(nx, ny)를 반환합니다.",
     inputSchema: {
       type: "object",
@@ -198,7 +209,7 @@ export const Module_Weather = {
         }
 
         const keywords = searchKeyword.split(/\s+/).filter(k => k.length > 0);
-        const excelData = readExcelFile('data/kma_coords.xlsx') as any[];
+        const excelData = readExcelFile(path.join(__dirname, '../../data/kma_coords.xlsx')) as any[];
         
         const found = excelData.find(row => {
           const fullAddr = `${row['1단계']} ${row['2단계'] || ''} ${row['3단계'] || ''}`.replace(/\s+/g, ' ').trim();
