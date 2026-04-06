@@ -23,12 +23,27 @@ const ESSENTIAL_TOOLS = [
    
 ];
 
+function PayloadSizeDebbuger(payload: any, label: string = "출고 데이터") {
+  try {
+    const jsonString = JSON.stringify(payload);
+    const sizeInBytes = Buffer.byteLength(jsonString, 'utf8');
+    const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+
+    console.error(`\n[NETWORK] 📤 ${label} 측정 완료`);
+    console.error(`[NETWORK] 📏 Payload Size: ${sizeInBytes} bytes (${sizeInKB} KB)`);
+    if (payload.tools) {
+      console.error(`[NETWORK] 📦 포함된 도구 수: ${payload.tools.length}개`);
+    }
+    console.error(`-------------------------------------------\n`);
+  } catch (error) {
+    console.error("[NETWORK] 용량 측정 중 에러 발생:", error);
+  }
+}
 
 const server = new Server(
   { name: "geocentrism-server", version: "1.0.0" },
   { capabilities: { tools: {} } }
 );
-
 // 도구 목록 요청 핸들러 
 /*
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
@@ -42,7 +57,6 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       ㄴ 필수 필드가 없는 경우를 대비한 기본값 처리 (중요)
          properties가 없으면 빈 객체라도 명시 (클로드 인식률 상승)
          required가 없으면 빈 배열이라도 명시 (클로드 인식률 상승)
-         
 */ 
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   try {
@@ -57,12 +71,18 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       };
     });
-    return { tools: toolList };
+
+    const responsePayload = { tools: toolList };
+    PayloadSizeDebbuger(responsePayload, "전체 툴 목록");
+
+    return responsePayload;
   } catch (error) {
     console.error("툴 목록 생성 중 에러:", error);
     return { tools: [] };
   }
 });
+
+
 // 도구 실행 요청 핸들러
 server.setRequestHandler(CallToolRequestSchema, async (request) => {
   const { name } = request.params;
@@ -79,28 +99,28 @@ async function main() {
    *   ESSENTIAL_TOOLS에 명시된 모든 도구가 ALL_TOOLS에 등록될 때까지 최대 1초간 대기.
    *   시퀸스 제어로 모든 도구가 메모리에 적재된 '완성 상태'에서만 클로드와 통신을 시작함.
    */
-  console.error("🔍 모듈 로딩 체크 중...");
+  console.error("[Initialization] 🔍 모듈 로딩 체크 중...");
   for (let i = 0; i < 10; i++) {
     const loadedKeys = Object.keys(ALL_TOOLS);
     const isReady = ESSENTIAL_TOOLS.every(key => loadedKeys.includes(key));
 
     if (isReady) {
-      console.error(`✅ 검수 완료: 총 ${loadedKeys.length}개 도구 로드됨.`);
+      console.error(`[Initialization] ✅ 검수 완료: 총 ${loadedKeys.length}개 도구 로드됨.`);
       break;
     }
-    console.error(`⏳ 도구 로딩 대기 중... (${i+1}/10)`);
+    console.error(`[Initialization] ⏳ 도구 로딩 대기 중... (${i+1}/10)`);
     await new Promise(res => setTimeout(res, 100));
   }
   
   
-  console.error("📦 등록된 툴 목록:", Object.keys(ALL_TOOLS));
+  console.error("[Initialization] 📦 등록된 툴 목록:", Object.keys(ALL_TOOLS));
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("🚀 Geocentrism MCP 허브 Online...");
+  console.error("[Boot] 🚀 Geocentrism MCP 허브 Online...");
 }
 
 main().catch((error) => {
-  console.error("💥 서버 치명적 에러:", error);
+  console.error("[Boot] 💥 서버 치명적 에러:", error);
   process.exit(1);
 });
 
