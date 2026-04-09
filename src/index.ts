@@ -4,23 +4,38 @@ import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprot
 
 import { Module_Tester } from "./modules/M_BootTest.js";
 import { Module_Weather } from "./modules/M_Weather_Korea.js";
+import { Module_File } from "./modules/M_FileControl.js";
 
 const ALL_TOOLS: any = {
-  ...Module_Tester,
-  ...Module_Weather
+  //...Module_Tester,
+  //...Module_Weather,
+  ...Module_File
 };
 // 특히 말썽이었던 놈은 꼭 포함
 const ESSENTIAL_TOOLS = [
+  /*
   "System_Version",
   "System_Hello",
   "System_Help",
-
+  
   "Weather_forecast_now",
   "Weather_forecast_short",
   "Weather_forecast_long",
   "Weather_coords",
-  "Weather_version"
-   
+  "Weather_version",
+  */
+  "File_File_Create",
+  "File_File_Read",
+  "File_File_Update",
+  "File_File_Delete",
+  "File_File_Copy",
+  "File_File_Move",
+  "File_Dict_Indexer",
+  "File_Dict_Create",
+  "File_Dict_Read",
+  "File_Dict_Update",
+  "File_Dict_Delete",
+  "File_Dict_Copy",
 ];
 
 function PayloadSizeDebbuger(payload: any, label: string = "출고 데이터") {
@@ -92,7 +107,6 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 async function main() {
-
   /**
    * [출고 검수 버퍼]
    *   모듈 로딩(Async)과 클라이언트 연결(Connect) 사이의 찰나의 지연을 해결.
