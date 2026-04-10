@@ -1,10 +1,10 @@
 import axios from 'axios';
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv'; 인덱스로 이사보냄 진입점이거기니깐
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { readExcelFile } from './Tools/ExcelReader.js';
 
-dotenv.config({ quiet: true });
+//dotenv.config({ quiet: true }); 너도따라가
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

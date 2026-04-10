@@ -1,23 +1,21 @@
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { ListToolsRequestSchema, CallToolRequestSchema } from "@modelcontextprotocol/sdk/types.js";
+import dotenv from 'dotenv';
 
-import { Module_Tester } from "./modules/M_BootTest.js";
 import { Module_Weather } from "./modules/M_Weather_Korea.js";
 import { Module_File } from "./modules/M_FileControl.js";
+import { Module_Image } from "./modules/M_ImageAI.js";
 
 const ALL_TOOLS: any = {
   //...Module_Tester,
   //...Module_Weather,
-  ...Module_File
+  ...Module_File,
+  ...Module_Image
 };
 // 특히 말썽이었던 놈은 꼭 포함
 const ESSENTIAL_TOOLS = [
   /*
-  "System_Version",
-  "System_Hello",
-  "System_Help",
-  
   "Weather_forecast_now",
   "Weather_forecast_short",
   "Weather_forecast_long",
@@ -36,6 +34,8 @@ const ESSENTIAL_TOOLS = [
   "File_Dict_Update",
   "File_Dict_Delete",
   "File_Dict_Copy",
+
+  "Image_Concept_Create"
 ];
 
 function PayloadSizeDebbuger(payload: any, label: string = "출고 데이터") {
@@ -113,6 +113,8 @@ async function main() {
    *   ESSENTIAL_TOOLS에 명시된 모든 도구가 ALL_TOOLS에 등록될 때까지 최대 1초간 대기.
    *   시퀸스 제어로 모든 도구가 메모리에 적재된 '완성 상태'에서만 클로드와 통신을 시작함.
    */
+  dotenv.config({ quiet: true });
+
   console.error("[Initialization] 🔍 모듈 로딩 체크 중...");
   for (let i = 0; i < 10; i++) {
     const loadedKeys = Object.keys(ALL_TOOLS);
