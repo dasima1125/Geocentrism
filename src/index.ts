@@ -10,7 +10,7 @@ import { Module_Image } from "./modules/M_ImageAI.js";
 const ALL_TOOLS: any = {
   //...Module_Tester,
   //...Module_Weather,
-  ...Module_File,
+  //...Module_File,
   ...Module_Image
 };
 // 특히 말썽이었던 놈은 꼭 포함
@@ -21,7 +21,7 @@ const ESSENTIAL_TOOLS = [
   "Weather_forecast_long",
   "Weather_coords",
   "Weather_version",
-  */
+  
   "File_File_Create",
   "File_File_Read",
   "File_File_Update",
@@ -34,6 +34,7 @@ const ESSENTIAL_TOOLS = [
   "File_Dict_Update",
   "File_Dict_Delete",
   "File_Dict_Copy",
+  */
 
   "Image_Concept_Create"
 ];
