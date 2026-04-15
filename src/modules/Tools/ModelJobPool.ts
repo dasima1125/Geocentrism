@@ -2,12 +2,11 @@ import path from 'path';
 import fsPromises from 'fs/promises';
 
 const DB_DIR = 'C:\\GitHub\\MCP project\\Geocentrism\\data';
-// 💡 직렬형 이름 유지: JobPool_Model.json
 const POOL_PATH = path.join(DB_DIR, 'JobPool_Model.json');
 
 export const JobPool = {
     // ✅ 내부 식별을 위한 type 추가
-    async push(taskData: { taskId: string; folderPath: string; fileName: string; type: 'model' | 'texture' }) {
+    async push(taskData: { taskId: string; folderPath: string; fileName: string; type: 'model' | 'texture' | 'concept';}) {
         await fsPromises.mkdir(DB_DIR, { recursive: true });
         let pool = [];
         try {
