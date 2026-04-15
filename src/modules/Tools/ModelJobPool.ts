@@ -11,7 +11,7 @@ export const JobPool = {
         let pool = [];
         try {
             const content = await fsPromises.readFile(POOL_PATH, 'utf-8');
-            pool = JSON.parse(content || "[]");
+            pool = JSON.parse(content || "[]"); 
         } 
         catch (e) { pool = []; }
         

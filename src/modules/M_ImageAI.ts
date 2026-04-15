@@ -132,7 +132,7 @@ export const Module_Image = {
 
         // 이미지 이름을 딴 디렉터리 생성 및 원본 이동
         const baseFileName = path.basename(cleanInputPath);
-        const pureAssetName = await FileTypeDecoupler(baseFileName) || path.parse(baseFileName).name;
+        const pureAssetName = FileTypeDecoupler(baseFileName) || path.parse(baseFileName).name;
 
         const { workspacePath } = await createAssetWorkspace(pureAssetName);
         const targetImagePath = path.join(workspacePath, baseFileName);
@@ -206,12 +206,12 @@ export const Module_Image = {
         if (!taskId) throw new Error(`API 응답 데이터 부정합: ${JSON.stringify(response.data)}`);
 
         const baseFileName = path.basename(normModelPath);
-        const pureAssetName = await FileTypeDecoupler(baseFileName) || path.parse(baseFileName).name;
+        const pureAssetName = FileTypeDecoupler(baseFileName) || path.parse(baseFileName).name;
 
         const { workspacePath } = await createAssetWorkspace(pureAssetName);
         const targetModelPath = path.join(workspacePath, baseFileName);
         if (normModelPath !== targetModelPath) await fsPromises.copyFile(normModelPath, targetModelPath);
-        
+
         const fullPath = await registerAssetToPool(pureAssetName, taskId, 'texture');
         return { content: [{ type: "text", text: `✅ 모델 생성 완료 - Task ID: ${taskId} - 작업 공간: ${fullPath}` }] };
 
@@ -269,7 +269,7 @@ const createAssetWorkspace = async (inputName: string) => {
 
   return { workspacePath, assetName };
 };
-const FileTypeCoupler = async (fileName: string, type: 'concept' | 'model' | 'texture') => {
+const FileTypeCoupler = (fileName: string, type: 'concept' | 'model' | 'texture') => {
 
   if (fileName.includes(`__${type}`)) { return fileName; }
 
@@ -280,7 +280,7 @@ const FileTypeCoupler = async (fileName: string, type: 'concept' | 'model' | 'te
   return `${base}__${type}@${timestamp}${ext}`;
 };
 
-const FileTypeDecoupler = async (fileName: string) => {
+const FileTypeDecoupler = (fileName: string) => {
   const base = path.basename(fileName);
   const ext = path.extname(base);
   const nameWithoutExt = path.basename(base, ext);
@@ -291,7 +291,7 @@ const FileTypeDecoupler = async (fileName: string) => {
 async function registerAssetToPool(pureName: string, taskId: string, type: 'concept' | 'model' | 'texture') {
 
   const { workspacePath, assetName } = await createAssetWorkspace(pureName);
-  const FileName_Taged = await FileTypeCoupler(assetName, type);
+  const FileName_Taged = FileTypeCoupler(assetName, type);
   const ext = (type === 'concept') ? '.jpg' : '.glb';
   const finalFileName = `${FileName_Taged}${ext}`;
   const fullPath = path.join(workspacePath, finalFileName);
@@ -313,15 +313,26 @@ interface ModelTask {
   type: 'concept' | 'model' | 'texture';
 }
 
-async function processTask(task: any, API_KEY: string | undefined, BASE_URL: string): Promise<string> {
+async function processTask(task: ModelTask, API_KEY: string | undefined, BASE_URL: string): Promise<string> {
   try {
+    
     if (task.type === 'concept') {
-      saveAsset(task.taskId, task.folderPath, task.fileName)
+      saveAssetAlpha_1(task.taskId, task.folderPath, task.fileName)
         .then(async () => { await JobPool.remove(task.taskId); })
-        .catch(() => { });
-
+        .catch((err) => { console.error(`[저장 실패] ${task.fileName}:`, err.message);});
       return `${task.fileName}: 로컬 저장 프로세스 시작 (Concept)`;
     }
+    /*
+    if (task.type === 'concept') {
+      try {
+        await saveAssetAlpha_1(task.taskId, task.folderPath, task.fileName);
+        await JobPool.remove(task.taskId);
+        return `${task.fileName}: 저장 완료`;
+      } catch (err: any) {
+        return `[에러] ${task.fileName}: ${err.message}`; // 이게 Inspector Tool Result에 바로 뜸
+      }
+    }
+    */
     const endpoint = task.type === 'texture' ? 'retexture' : 'image-to-3d';
     const { data } = await axios.get(`${BASE_URL}/${endpoint}/${task.taskId}`, { headers: { 'Authorization': `Bearer ${API_KEY}` } });
 
@@ -361,6 +372,25 @@ async function saveAsset(url: string, folderPath: string, fileName: string): Pro
   return fullPath;
 }
 
+async function saveAssetAlpha_1(url: string, folderPath: string, fileName: string): Promise<string> {
+  const API_KEY = process.env.SERVICE_KEY_pollinations;
+  const { data } = await axios.get(url, {
+    responseType: 'arraybuffer',
+    maxContentLength: Infinity,
+    maxBodyLength: Infinity,
+    headers: { 'Authorization': `Bearer ${API_KEY}` }
+  });
+
+  const fullPath = path.join(folderPath, fileName);
+
+  await fsPromises.mkdir(folderPath, { recursive: true });
+  await fsPromises.writeFile(fullPath, Buffer.from(data));
+
+  // 백그라운드 로그용
+  console.error(`[System] 💾 파일 저장 완료: ${fullPath}`);
+  return fullPath;
+}
+
 
 
 const getTaskVerdict = (data: any, task: any): TaskVerdict => {
@@ -374,3 +404,46 @@ const getTaskVerdict = (data: any, task: any): TaskVerdict => {
 
   return { type: 'DOWNLOAD', msg: '준비 완료', url: downloadUrl };
 };
+
+/**
+ *
+ * Image_ConceptCreate_POST: {
+    description: "[이미지 시스템] 컨셉 이미지 생성 도구",
+    inputSchema: {
+      type: "object",
+      properties: {
+        subject:  { type: "string", description: "생성할 이미지 설명입니다." },
+        fileName: { type: "string", description: "생성할 이미지 파일명입니다." }
+      },
+      required: ["subject", "fileName"]
+    },
+    handler: async (args: { subject: string; fileName: string }) => {
+      const API_KEY = process.env.SERVICE_KEY_pollinations;
+      try {
+        const response = await axios.post('https://gen.pollinations.ai/v1/images/generations', {
+          prompt: `low-poly, ${args.subject}, game asset, isolated, white background`,
+          model: 'flux',
+          size: '512x512',
+          response_format: 'url'
+        }, { headers: { 'Authorization': `Bearer ${API_KEY}` } });
+
+        const imageUrl = response.data?.data?.[0]?.url;
+        if (!imageUrl) throw new Error("URL 생성 실패");
+
+        const imageRes = await axios.get(imageUrl, { 
+          responseType: 'arraybuffer', 
+          headers: { 'Authorization': `Bearer ${API_KEY}` } 
+        });
+        const { workspacePath, assetName } = await createAssetWorkspace(args.fileName);
+        const FileName_Taged = await FileTypeCoupler(assetName, "concept");
+        const fullPath = path.join(workspacePath, `${FileName_Taged}.jpg`);
+
+        await fsPromises.mkdir(path.dirname(fullPath), { recursive: true });
+        await fsPromises.writeFile(fullPath, Buffer.from(imageRes.data));
+
+        return { content: [{ type: "text", text: `✅ 생성 완료: ${fullPath}` }] };
+      } 
+      catch (error: any) { return { content: [{ type: "text", text: `❌ 에러: ${error.message}` }], isError: true }; }
+    }
+  },
+ */

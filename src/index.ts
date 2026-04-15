@@ -36,7 +36,10 @@ const ESSENTIAL_TOOLS = [
   "File_Dict_Copy",
   */
 
-  "Image_Concept_Create"
+  "Image_ConceptCreate_POST",
+  "Image_ConvertImgToModel_POST",
+  "Image_TextureWithImage_POST",
+  "Image_HarvestResults_POST"
 ];
 
 function PayloadSizeDebbuger(payload: any, label: string = "출고 데이터") {
@@ -51,9 +54,8 @@ function PayloadSizeDebbuger(payload: any, label: string = "출고 데이터") {
       console.error(`[NETWORK] 📦 포함된 도구 수: ${payload.tools.length}개`);
     }
     console.error(`-------------------------------------------\n`);
-  } catch (error) {
-    console.error("[NETWORK] 용량 측정 중 에러 발생:", error);
-  }
+  } 
+  catch (error) {console.error("[NETWORK] 용량 측정 중 에러 발생:", error);}
 }
 
 const server = new Server(
@@ -73,7 +75,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
       ㄴ 필수 필드가 없는 경우를 대비한 기본값 처리 (중요)
          properties가 없으면 빈 객체라도 명시 (클로드 인식률 상승)
          required가 없으면 빈 배열이라도 명시 (클로드 인식률 상승)
-*/ 
+*/
 server.setRequestHandler(ListToolsRequestSchema, async () => {
   try {
     const toolList = Object.entries(ALL_TOOLS).map(([name, tool]: [string, any]) => {
@@ -87,12 +89,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
         },
       };
     });
-
     const responsePayload = { tools: toolList };
     PayloadSizeDebbuger(responsePayload, "전체 툴 목록");
 
     return responsePayload;
-  } catch (error) {
+  } 
+  catch (error) {
     console.error("툴 목록 생성 중 에러:", error);
     return { tools: [] };
   }
@@ -106,14 +108,13 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
   if (!tool) throw new Error(`그런게있을리가.. ${name}은(는) 없는 명령이야`);
   return tool.handler(request.params.arguments);
 });
-
-async function main() {
-  /**
+/**
    * [출고 검수 버퍼]
    *   모듈 로딩(Async)과 클라이언트 연결(Connect) 사이의 찰나의 지연을 해결.
    *   ESSENTIAL_TOOLS에 명시된 모든 도구가 ALL_TOOLS에 등록될 때까지 최대 1초간 대기.
    *   시퀸스 제어로 모든 도구가 메모리에 적재된 '완성 상태'에서만 클로드와 통신을 시작함.
    */
+async function main() {
   dotenv.config({ quiet: true });
 
   console.error("[Initialization] 🔍 모듈 로딩 체크 중...");
@@ -125,11 +126,11 @@ async function main() {
       console.error(`[Initialization] ✅ 검수 완료: 총 ${loadedKeys.length}개 도구 로드됨.`);
       break;
     }
-    console.error(`[Initialization] ⏳ 도구 로딩 대기 중... (${i+1}/10)`);
+    console.error(`[Initialization] ⏳ 도구 로딩 대기 중... (${i + 1}/10)`);
     await new Promise(res => setTimeout(res, 100));
   }
-  
-  
+
+
   console.error("[Initialization] 📦 등록된 툴 목록:", Object.keys(ALL_TOOLS));
   const transport = new StdioServerTransport();
   await server.connect(transport);
