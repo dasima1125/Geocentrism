@@ -1,6 +1,6 @@
 {
   "name": "geocentrism",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "MCP practice project",
   "main": "index.js",
