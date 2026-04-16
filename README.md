@@ -5,7 +5,7 @@
 [![Node.js Version](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**생성형 AI 시스템을 활용하여 게임 제작에 필요한 3D 모델과 텍스처를 간단하고 편리하게 생성하고, 이를 로컬 작업 공간에 즉시 적용할 수 있도록 돕는 커스텀 MCP 서버입니다
+* **생성형 AI 시스템을 활용하여 게임 제작에 필요한 3D 모델과 텍스처를 간단하고 편리하게 생성하고, 이를 로컬 작업 공간에 즉시 적용할 수 있도록 돕는 커스텀 MCP 서버입니다
 
 <sub>*이 시스템은 초기 버전이자 기술 실증(Proof of Concept)을 목적으로 설계되었습니다. 입문 프로젝트로서 구조적인 실험 단계에 있으며, 향후 보다 진보된 아키텍처를 가진 프로젝트를 위한 토대가 될 예정입니다.*</sub>
 
@@ -20,8 +20,8 @@
 
 ## 01. 개요 (Overview)
 
-> **Geocentrism**은 파편화된 생성형 AI 에셋 제작 공정을 MCP 환경 내에서 하나로 통합하는 기술 실증용 서버입니다. 
-> 이미지나 모델, 텍스처 등 다양한 에셋의 생성부터 로컬 저장소로의 **수확(Harvesting)**까지 이어지는 자동화 파이프라인 구축에 집중합니다.
+> 이 프로젝트는 파편화된 생성형 AI 에셋 제작 공정을 MCP 환경 내에서 하나로 통합하는 기술 실증용 서버입니다. 
+> 이미지나 모델, 텍스처 등 다양한 에셋의 생성부터 로컬 저장소로의 수확까지 이어지는 자동화 파이프라인 구축에 집중합니다.
 
 * **🛡️ 진입로 통일 및 안전장치**: 모든 에셋 생성 요청을 인덱스(Index) 단계에서 단일화된 경로로 제어하고, 예외 처리를 통해 안정성을 보장합니다.
 * **🚜 자동화된 자산 수확**: 생성된 에셋의 링크를 시스템에 등록한 뒤, 전용 명령을 통해 로컬 저장소로 일괄 수확하여 처리합니다.
@@ -36,7 +36,7 @@
 * **[Pollinations.ai](https://pollinations.ai/)**: 2D 컨셉 이미지 생성 엔진 (Flux 기반)
 * **[Meshy.ai](https://www.meshy.ai/)**: 3D 모델링 및 텍스처링 엔진
 * **[Model Context Protocol](https://modelcontextprotocol.io/)**: Anthropic의 에이전틱 서버 표준 규격
-* **[공공데이터포털](https://www.data.go.kr/)**: 한국 기상청 단기예보 API 서비스 <sub>*(해당 기능은 MCP 테스트용이며, 인덱스에서 모듈 사용 해제 시 시스템 영향 없이 제거 가능합니다.)*</sub>
+* **[공공데이터포털](https://www.data.go.kr/)**: 한국 기상청 단기예보 API 서비스 <sub>*(해당 기능은 MCP 테스트용이며, 인덱스에서 시스템 영향 없이 제거 가능합니다.)*</sub>
 
 ## 01-2. Tech Stack & Libraries
 
@@ -54,7 +54,7 @@
 ## 02. 핵심 기능 (Key Features)  
 
 
-### 🛡️ Index (접근부)
+## 🛡️ Index (접근부)
 >서버 가용성 보장 및 통신 규격 최적화를 위해 클라이언트와 내부 모듈 사이의 관제 레이어 역할을 수행합니다.
 * **출고 검수 버퍼**
     > 비동기 모듈 로딩 시 발생할 수 있는 '도구 누락'을 방지하기 위해 필수 도구(`ESSENTIAL_TOOLS`)가 메모리에 완전히 적재될 때까지 최대 10회 재검토 후 가동합니다.
@@ -65,7 +65,7 @@
 
 <br>
 
-### ☀️ Module_Weather (한국 기상청 API)
+## ☀️ Module_Weather (한국 기상청 API)
 
 * **초단기 실황 조회**
     > 현재 시점의 실제 기상 관측 데이터(기온, 강수량, 풍향, 풍속 등)를 수집합니다.
@@ -80,7 +80,7 @@
 
 <br>
 
-### 📁 Module_File (파일 시스템)   
+## 📁 Module_File (파일 시스템)   
 
 <sub>*사용 주의 (Technical Advisory) > 본 모듈은 현재 기술 실증(PoC) 단계로, 복잡한 로컬 경로 및 권한 환경에서 보안/오류 이슈가 발생할 수 있습니다. 안정적인 작업을 위해 공식 MCP Filesystem 사용을 우선 권장하며, 본 시스템은 차후 아키텍처 개선을 통해 업데이트될 예정입니다.*</sub>
 * **파일 제어**
@@ -98,7 +98,7 @@
 
 <br>
 
-### 🎨 Module_Image (생성형 에셋)
+## 🎨 Module_Image (생성형 에셋)
 
 * **컨셉 이미지 생성**
     > Pollinations.ai(Flux 모델)를 통해 low-poly 게임 에셋 스타일의 컨셉 이미지를 생성하고, 작업 풀에 등록합니다.
@@ -111,36 +111,106 @@
 
 <br>
     
-## 03. 시작하기
+## 03. 시작하기 (Get Started)
 
-### 1. Requirements
+## 03-1. Requirements
 | 환경 | 최소 사양 | 비고 |
 | :--- | :--- | :--- |
 | **Node.js** | 18.x 이상 | LTS 버전 권장 |
 | **Protocol** | MCP | Model Context Protocol 환경 |
 
-### 2. Quick Setup
-<sub>*각 모듈은 독립적이며 메인인덱스에서 사용하실꺼만 넣으셔도됩니다.*</sub>
-환경 변수(`.env`)를 설정하고 공장을 가동하십시오.
+## 03-2. Quick Setup
+> 환경 변수(`.env`)를 설정하세요.
 
-# 기상청 단기예보 서비스 키 (Encoding/Decoding 확인 필요)
-SERVICE_KEY_Weather=YOUR_KOREA_WEATHER_KEY
+<sub>*각 모듈은 독립적이며 메인인덱스에서 사용하실꺼만 넣으셔도됩니다.*</sub>  
 
-# Google Gemini API Key (에이전트 판단 중추)
-SERVICE_KEY_MCPCORE=YOUR_GEMINI_API_KEY
+- * **기상청 단기예보 도메인**
+  > - API KEY     :  SERVICE_KEY_Weather=YOUR_KOREA_WEATHER_KEY
+- * **Pollinations.ai API Key**
+  > - API KEY     : SERVICE_KEY_pollinations=YOUR_POLLINATIONS_KEY
+- * **Meshy.ai API Key**
+  > - API KEY     : SERVICE_KEY_MESHAI=YOUR_MESHY_API_KEY
 
-# Pollinations.ai API Key (컨셉 이미지 생성용)
-SERVICE_KEY_pollinations=YOUR_POLLINATIONS_KEY
-
-# Meshy.ai API Key (3D 에셋 변환용)
-SERVICE_KEY_MESHAI=YOUR_MESHY_API_KEY
-
+## 03-3. 인스펙터 테스트
 ```bash
 # 1. 레포지토리 클론
-git clone [https://github.com/your-repo/geocentrism.git](https://github.com/your-repo/geocentrism.git)
-
+git clone https://github.com/your-repo/geocentrism.git
 # 2. 의존성 설치 및 빌드
 npm install && npm run build
 
 # 3. 하베스터 런칭
 npx @modelcontextprotocol/inspector dist/index.js
+```
+## 03-4. Claude Desktop 연동
+
+#### 설정 파일 경로 (Path)
+> 사용 중인 OS의 경로를 복사하여 탐색기 주소창에 입력하세요.
+
+* **Windows**: `%AppData%\Roaming\Claude\claude_desktop_config.json`
+* **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+#### JSON 설정 (Configuration)
+> `claude_desktop_config.json` 파일을 열어 아래 내용을 추가합니다.
+
+```json
+{
+  "mcpServers": {
+    "geocentrism": {
+      "command": "node",
+      "args": [
+        "C:/절대경로/geocentrism/dist/index.js"
+      ],
+      "env": {
+        "SERVICE_KEY_Weather": "발급받은_기상청_키_입력",
+        "SERVICE_KEY_pollinations": "발급받은_POLLINATIONS_키_입력",
+        "SERVICE_KEY_MESHAI": "발급받은_MESHY_키_입력"
+      }
+    }
+  }
+}
+```
+### 03-5. 초기 가동 시 주의사항
+작업 공간 자동 생성: 서버가 처음 실행되면 C:\ 루트(또는 설정된 경로)에 MCP_InteractionSpace 폴더가 자동으로 생성됩니다.  
+모든 에셋 수확물은 이 샌드박스 내부에서 관리됩니다.
+
+<br>
+
+## 04. 아키텍처 (Architecture)
+#### 프로젝트 구조
+>기능별 모듈화와 독립적인 도구 관리를 지향하는 구조입니다.
+
+geocentrism/  
+├── data/               # 격자 좌표(kma_coords.csv) 등 정적 데이터  
+├── dist/               # 컴파일된 JavaScript 결과물  
+├── src/  
+│   ├── index.ts        # [Entry Point] 부모 인덱스 및 모든 모듈 통합 관리  
+│   ├── Module_Weather.ts  # 기상청 API 연동 및 데이터 가공  
+│   ├── Module_Image.ts    # Pollinations/Meshy AI 에셋 생성 로직  
+│   ├── Module_File.ts     # 로컬 파일 시스템 제어 및 샌드박스 관리  
+│   └── Tools/  
+│       └── ModelJobPool.ts # 비동기 에셋 생성 상태 및 작업 큐 관리  
+├── .env                # API 환경 변수  
+├── package.json        # 의존성 및 스크립트 설정  
+└── tsconfig.json       # TypeScript 컴파일 설정 
+
+<br>
+
+## 05. 버전 기록 (Changelog)
+
+### v1.0.1 (2026-04-17)
+* **Initial Release**: 프로젝트 공식 런칭 및 리드미 작성 완료
+* **Core Pipeline**: 도구 처리 파이프라인 구축
+* **File System**: `C:/MCP_InteractionSpace` 기반의 원자적 파일 관리 모듈 구현
+
+<br>
+
+## 06. 라이선스 (License)
+
+본 프로젝트는 **MIT License**를 따릅니다.   
+누구나 자유롭게 수정, 배포 및 상업적 이용이 가능합니다. 
+
+---
+
+## 📮 Contact
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white)](https://github.com/dasima1125)
+[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=flat-square&logo=Gmail&logoColor=white)](mailto:reba112119@gmail.com)
