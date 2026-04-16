@@ -5,7 +5,7 @@
 [![Node.js Version](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-* **생성형 AI 시스템을 활용하여 게임 제작에 필요한 3D 모델과 텍스처를 간단하고 편리하게 생성하고, 이를 로컬 작업 공간에 즉시 적용할 수 있도록 돕는 커스텀 MCP 서버입니다
+## 생성형 AI 시스템을 활용하여 게임 제작에 필요한 3D 모델과 텍스처를 간단하고 편리하게 생성하고, 이를 로컬 작업 공간에 즉시 적용할 수 있도록 돕는 커스텀 MCP 서버입니다 
 
 <sub>*이 시스템은 초기 버전이자 기술 실증(Proof of Concept)을 목적으로 설계되었습니다. 입문 프로젝트로서 구조적인 실험 단계에 있으며, 향후 보다 진보된 아키텍처를 가진 프로젝트를 위한 토대가 될 예정입니다.*</sub>
 
