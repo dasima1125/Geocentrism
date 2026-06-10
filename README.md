@@ -1,7 +1,7 @@
 # 🏗️ Geocentrism
 > **Custom MCP Server for Automated 3D Game Asset Generation**
 
-[![npm version](https://img.shields.io/badge/npm-v1.0.1-blue.svg)](https://www.npmjs.com/)
+[![GitHub release](https://img.shields.io/github/v/release/dasima1125/Geocentrism)](https://github.com/dasima1125/Geocentrism/releases)
 [![Node.js Version](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
