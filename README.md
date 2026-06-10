@@ -134,7 +134,7 @@
 ## 03-3. 인스펙터 테스트
 ```bash
 # 1. 레포지토리 클론
-git clone https://github.com/your-repo/geocentrism.git
+git clone https://github.com/dasima1125/Geocentrism.git
 # 2. 의존성 설치 및 빌드
 npm install && npm run build
 
