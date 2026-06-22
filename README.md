@@ -41,7 +41,7 @@
 ## 01-2. Tech Stack & Libraries
 
 ### ⚙️ Core System
-* **Runtime**: [![Node.js Version](https://img.shields.io/badge/node-18%2B-green.svg)](https://nodejs.org/)
+* **Runtime**: [![GitHub release](https://img.shields.io/github/v/release/dasima1125/Geocentrism?include_prereleases)](https://github.com/dasima1125/Geocentrism/releases)
 * **Language**: [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 
 ### 🛠️ External Libraries
